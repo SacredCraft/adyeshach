@@ -70,6 +70,9 @@ object Command {
     val list = listSubCommand
 
     @CommandBody
+    val lock = lockSubCommand
+
+    @CommandBody
     val reload = subCommand {
         execute<CommandSender> { sender, _, _ ->
             AdyeshachSettings.conf.reload()

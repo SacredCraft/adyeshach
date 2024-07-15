@@ -43,6 +43,12 @@ val editSubCommand = subCommand {
                     return@execute
                 }
                 val entity = npcList.first()
+                // 是否锁定
+                if (entity.hasPersistentTag("PUBLIC_LOCK")) {
+                    sender.sendMessage("§c[Adyeshach] §7Entity is locked.")
+                    sender.sendMessage("§c[Adyeshach] §7Use §8/adyeshach lock ${entity.id}§7 to unlock.")
+                    return@execute
+                }
                 // 类型
                 val type = args.substringBefore(":")
                 // 页码
@@ -152,7 +158,15 @@ val editSubCommand = subCommand {
         }
         // 定向编辑
         execute<Player> { sender, ctx, _ ->
-            multiControl<EntitySource.Empty>(sender, ctx.self(), STANDARD_EDIT_TRACKER, unified = false) { EditPanel(sender, it).open() }
+            multiControl<EntitySource.Empty>(sender, ctx.self(), STANDARD_EDIT_TRACKER, unified = false) {
+                // 是否锁定
+                if (it.hasPersistentTag("PUBLIC_LOCK")) {
+                    sender.sendMessage("§c[Adyeshach] §7Entity is locked.")
+                    sender.sendMessage("§c[Adyeshach] §7Use §8/adyeshach lock ${it.id}§7 to unlock.")
+                    return@execute
+                }
+                EditPanel(sender, it).open()
+            }
         }
     }
     // 就近编辑
@@ -161,6 +175,12 @@ val editSubCommand = subCommand {
         if (nearestEntity == null) {
             sender.sendLang("command-find-empty")
         } else {
+            // 是否锁定
+            if (nearestEntity.hasPersistentTag("PUBLIC_LOCK")) {
+                sender.sendMessage("§c[Adyeshach] §7Entity is locked.")
+                sender.sendMessage("§c[Adyeshach] §7Use §8/adyeshach lock ${nearestEntity.id}§7 to unlock.")
+                return@execute
+            }
             EditPanel(sender, nearestEntity).open()
         }
     }

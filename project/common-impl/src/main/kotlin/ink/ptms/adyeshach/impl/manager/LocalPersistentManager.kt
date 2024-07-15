@@ -48,6 +48,10 @@ open class LocalPersistentManager : DefaultManager() {
 
     override fun onSave() {
         activeEntity.forEach { entity ->
+            // 锁定的实体不保存
+            if (entity.hasPersistentTag("PUBLIC_LOCK")) {
+                return@forEach
+            }
             val json = entity.toJson()
             val jsonHash = json.digest("sha-1")
             if (hash[entity.uniqueId] != jsonHash) {

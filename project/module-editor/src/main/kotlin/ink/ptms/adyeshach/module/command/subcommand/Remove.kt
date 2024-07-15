@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode")
+
 package ink.ptms.adyeshach.module.command.subcommand
 
 import ink.ptms.adyeshach.core.entity.EntityInstance
@@ -28,7 +30,15 @@ val removeSubCommand = subCommand {
                     return@execute
                 }
                 // 删除单位
-                npcList.forEach { it.remove() }
+                npcList.forEach {
+                    // 是否锁定
+                    if (it.hasPersistentTag("PUBLIC_LOCK")) {
+                        sender.sendMessage("§c[Adyeshach] §7Entity is locked.")
+                        sender.sendMessage("§c[Adyeshach] §7Use §8/adyeshach lock ${it.id}§7 to unlock.")
+                        return@forEach
+                    }
+                    it.remove()
+                }
                 // 打印追踪器
                 EntityTracker.check(sender, STANDARD_REMOVE_TRACKER, npcList.first())
                 // 提示信息
@@ -43,6 +53,12 @@ val removeSubCommand = subCommand {
         // 定向删除
         execute<CommandSender> { sender, ctx, _ ->
             multiControl<RemoveEntitySource>(sender, ctx.self(), STANDARD_REMOVE_TRACKER) {
+                // 是否锁定
+                if (it.hasPersistentTag("PUBLIC_LOCK")) {
+                    sender.sendMessage("§c[Adyeshach] §7Entity is locked.")
+                    sender.sendMessage("§c[Adyeshach] §7Use §8/adyeshach lock ${it.id}§7 to unlock.")
+                    return@execute
+                }
                 it.remove()
                 sender.sendLang("command-remove-success", it.id, it.uniqueId)
             }
@@ -51,6 +67,12 @@ val removeSubCommand = subCommand {
     // 就近删除
     execute<Player> { sender, _, _ ->
         multiControl<RemoveEntitySource>(sender, STANDARD_REMOVE_TRACKER) {
+            // 是否锁定
+            if (it.hasPersistentTag("PUBLIC_LOCK")) {
+                sender.sendMessage("§c[Adyeshach] §7Entity is locked.")
+                sender.sendMessage("§c[Adyeshach] §7Use §8/adyeshach lock ${it.id}§7 to unlock.")
+                return@execute
+            }
             it.remove()
             sender.sendLang("command-remove-success", it.id, it.uniqueId)
         }
