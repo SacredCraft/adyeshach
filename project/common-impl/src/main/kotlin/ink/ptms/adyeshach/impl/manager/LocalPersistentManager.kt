@@ -69,12 +69,12 @@ open class LocalPersistentManager : DefaultManager() {
             // 写入垃圾桶，且不重复
             var i = 0
             while (true) {
-                val newFile = File(getDataFolder(), "npc/trash/${name}_${System.currentTimeMillis() + i}.json")
-                if (newFile.exists()) {
+                val trash = File(getDataFolder(), "npc/trash/${name}_${System.currentTimeMillis() + i}.json")
+                if (trash.exists()) {
                     i++
                     continue
                 }
-                newFile.writeText(entityInstance.toJson())
+                newFile(trash).writeText(entityInstance.toJson())
                 break
             }
             // 删除源文件
