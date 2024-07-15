@@ -23,6 +23,7 @@ gradlew.bat clean build
 + 公有且持久化的 NPC 限制使用重复的 ID，且持久化文件以 `TYPE-ID` 命名。
 + 不再允许对 ID 进行二次修改。
 + 不再支持 `rename` 指令。
++ 不再支持 `undo` 指令。
 
 ## TraitSit 调整
 

@@ -21,13 +21,15 @@ val cloneSubCommand = subCommand {
         dynamic("new-id") {
             // 定向克隆
             execute<Player> { sender, ctx, _ ->
-                multiControl<EntitySource.Empty>(sender, ctx["id"], STANDARD_CLONE_TRACKER, unified = false) {
-                    // 克隆
-                    it.clone(ctx.self(), sender.location)
-                    // 打印追踪器
-                    EntityTracker.check(sender, STANDARD_CLONE_TRACKER, it)
-                    // 提示信息
-                    sender.sendLang("command-clone-success", it.id, ctx.self())
+                if (validation(sender, ctx.self())) {
+                    multiControl<EntitySource.Empty>(sender, ctx["id"], STANDARD_CLONE_TRACKER, unified = false) {
+                        // 克隆
+                        it.clone(ctx.self(), sender.location)
+                        // 打印追踪器
+                        EntityTracker.check(sender, STANDARD_CLONE_TRACKER, it)
+                        // 提示信息
+                        sender.sendLang("command-clone-success", it.id, ctx.self())
+                    }
                 }
             }
         }
@@ -49,12 +51,14 @@ val cloneSubCommand = subCommand {
                     }
                     "${it.id}_$i"
                 }
-                // 克隆
-                it.clone(newId, sender.location)
-                // 打印追踪器
-                EntityTracker.check(sender, STANDARD_CLONE_TRACKER, it)
-                // 提示信息
-                sender.sendLang("command-clone-success", it.id, newId)
+                if (validation(sender, newId)) {
+                    // 克隆
+                    it.clone(newId, sender.location)
+                    // 打印追踪器
+                    EntityTracker.check(sender, STANDARD_CLONE_TRACKER, it)
+                    // 提示信息
+                    sender.sendLang("command-clone-success", it.id, newId)
+                }
             }
         }
     }

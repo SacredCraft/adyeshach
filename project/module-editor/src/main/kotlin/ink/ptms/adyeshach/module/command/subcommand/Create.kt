@@ -71,10 +71,10 @@ val createSubCommand = subCommand {
     }
 }
 
-private fun validation(sender: CommandSender, id: String): Boolean {
+fun validation(sender: CommandSender, id: String): Boolean {
     val hasEntity = Adyeshach.api().getPublicEntityManager(ManagerType.PERSISTENT).getEntityById(id).isNotEmpty()
     if (hasEntity) {
-        sender.sendMessage("§c[Adyeshach] §7Entity id §8$id §7already exists.")
+        sender.sendMessage("§c[Adyeshach] §7Entity ID §8$id §7already exists.")
         return false
     }
     return true

@@ -28,37 +28,38 @@ private const val STANDARD_REMOVE_TRACKER = "remove"
  * npc undo (uuid)
  */
 val undoSubCommand = subCommand {
-    dynamic("uuid") {
-        suggestUncheck { File(getDataFolder(), "npc/trash").listFiles()?.filter { it.extension == "json" }?.map { it.nameWithoutExtension } }
-        // 定向重命名
-        execute<CommandSender> { sender, _, args ->
-            val file = File(getDataFolder(), "npc/trash/$args.json")
-            if (file.exists()) {
-                try {
-                    // 恢复单位
-                    val entity = Adyeshach.api().getPublicEntityManager(ManagerType.PERSISTENT).loadEntityFromFile(file)
-                    // 刷新追踪器
-                    val tracker = EntityTracker.get(sender, STANDARD_REMOVE_TRACKER)
-                    if (tracker != null) {
-                        val elements = tracker.entitySource.elements
-                        val index = elements.indexOfFirst { it.uniqueId == entity.uniqueId }
-                        if (index > -1) {
-                            elements[index] = entity
-                            tracker.print()
-                        }
-                    }
-                    file.delete()
-                    sender.sendLang("command-undo-success", entity.id)
-                } catch (ex: Throwable) {
-                    sender.sendLang("command-undo-failed", args, ex.message.toString())
-                }
-            } else {
-                sender.sendLang("command-undo-not-found")
-            }
-        }
-    }
+//    dynamic("uuid") {
+//        suggestUncheck { File(getDataFolder(), "npc/trash").listFiles()?.filter { it.extension == "json" }?.map { it.nameWithoutExtension } }
+//        // 定向重命名
+//        execute<CommandSender> { sender, _, args ->
+//            val file = File(getDataFolder(), "npc/trash/$args.json")
+//            if (file.exists()) {
+//                try {
+//                    // 恢复单位
+//                    val entity = Adyeshach.api().getPublicEntityManager(ManagerType.PERSISTENT).loadEntityFromFile(file)
+//                    // 刷新追踪器
+//                    val tracker = EntityTracker.get(sender, STANDARD_REMOVE_TRACKER)
+//                    if (tracker != null) {
+//                        val elements = tracker.entitySource.elements
+//                        val index = elements.indexOfFirst { it.uniqueId == entity.uniqueId }
+//                        if (index > -1) {
+//                            elements[index] = entity
+//                            tracker.print()
+//                        }
+//                    }
+//                    file.delete()
+//                    sender.sendLang("command-undo-success", entity.id)
+//                } catch (ex: Throwable) {
+//                    sender.sendLang("command-undo-failed", args, ex.message.toString())
+//                }
+//            } else {
+//                sender.sendLang("command-undo-not-found")
+//            }
+//        }
+//    }
     execute<Player> { sender, _, _ ->
-        sender.openTrashMenu()
+        sender.sendMessage("§c[Adyeshach] §7This command is no longer supported. Please restore it from the file system.")
+//        sender.openTrashMenu()
     }
 }
 

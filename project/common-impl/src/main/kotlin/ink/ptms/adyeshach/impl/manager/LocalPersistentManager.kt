@@ -62,8 +62,18 @@ open class LocalPersistentManager : DefaultManager() {
         val name = "${entityInstance.entityType}-${entityInstance.id}"
         val file = newFile(getDataFolder(), "npc/$name.json")
         if (file.exists()) {
-            file.writeText(entityInstance.toJson())
-            file.copyTo(File(getDataFolder(), "npc/trash/$name.json"), overwrite = true)
+            // 写入垃圾桶，且不重复
+            var i = 0
+            while (true) {
+                val newFile = File(getDataFolder(), "npc/trash/${name}_${System.currentTimeMillis() + i}.json")
+                if (newFile.exists()) {
+                    i++
+                    continue
+                }
+                newFile.writeText(entityInstance.toJson())
+                break
+            }
+            // 删除源文件
             file.delete()
         }
         hash.remove(entityInstance.uniqueId)
