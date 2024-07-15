@@ -36,12 +36,6 @@ abstract class DefaultEntityBase(
     val metadataMask = ConcurrentHashMap<String, MutableMap<String, Boolean>>()
 
     /**
-     * 实体鉴别 ID
-     */
-    @Expose
-    final override var id = UUID.randomUUID().toString().substring(0, 8)
-
-    /**
      * 实体唯一 ID
      */
     @Expose
@@ -57,6 +51,20 @@ abstract class DefaultEntityBase(
         } else {
             val id = uniqueId
             FastUUID.parseUUID("${id.substring(0, 8)}-${id.substring(8, 12)}-${id.substring(12, 16)}-${id.substring(16, 20)}-${id.substring(20)}")
+        }
+
+    /**
+     * 实体鉴别 ID
+     */
+    @Expose
+    final override var id = uniqueId.substring(0, 8)
+        set(value) {
+            // 不允许对 id 进行二次修改
+            if (uniqueId.startsWith(id)) {
+                field = value
+            } else {
+                error("禁止对 ID 进行二次修改，$field => $value。")
+            }
         }
 
     /**

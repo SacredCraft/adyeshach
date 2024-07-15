@@ -4,6 +4,7 @@ import ink.ptms.adyeshach.core.entity.EntityInstance
 import ink.ptms.adyeshach.core.entity.EntityTypes
 import ink.ptms.adyeshach.core.entity.type.AdyArmorStand
 import ink.ptms.adyeshach.core.event.AdyeshachEntityRemoveEvent
+import ink.ptms.adyeshach.core.event.AdyeshachEntitySpawnEvent
 import ink.ptms.adyeshach.impl.entity.trait.Trait
 import org.bukkit.entity.Player
 import taboolib.common.platform.event.SubscribeEvent

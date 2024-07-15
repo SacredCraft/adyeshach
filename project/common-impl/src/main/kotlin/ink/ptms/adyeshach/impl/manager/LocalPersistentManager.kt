@@ -8,6 +8,7 @@ import taboolib.common.io.digest
 import taboolib.common.io.newFile
 import taboolib.common.io.newFolder
 import taboolib.common.platform.function.getDataFolder
+import taboolib.module.chat.uncolored
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
@@ -35,6 +36,14 @@ open class LocalPersistentManager : DefaultManager() {
                 ex.printStackTrace()
             }
         }
+        // 对 TraitSit 的暴力回收
+        activeEntity.forEach { entity ->
+            if (entity.getCustomName().uncolored() == "trait_sit_npc") {
+                if (entity.getPassengers().isEmpty()) {
+                    entity.remove()
+                }
+            }
+        }
     }
 
     override fun onSave() {
@@ -43,17 +52,18 @@ open class LocalPersistentManager : DefaultManager() {
             val jsonHash = json.digest("sha-1")
             if (hash[entity.uniqueId] != jsonHash) {
                 hash[entity.uniqueId] = jsonHash
-                newFile(getDataFolder(), "npc/${entity.uniqueId}.json").writeText(json)
+                newFile(getDataFolder(), "npc/${entity.entityType}-${entity.id}.json").writeText(json)
             }
         }
     }
 
     override fun remove(entityInstance: EntityInstance) {
         super.remove(entityInstance)
-        val file = newFile(getDataFolder(), "npc/${entityInstance.uniqueId}.json")
+        val name = "${entityInstance.entityType}-${entityInstance.id}"
+        val file = newFile(getDataFolder(), "npc/$name.json")
         if (file.exists()) {
             file.writeText(entityInstance.toJson())
-            file.copyTo(File(getDataFolder(), "npc/trash/${entityInstance.uniqueId}.json"), overwrite = true)
+            file.copyTo(File(getDataFolder(), "npc/trash/$name.json"), overwrite = true)
             file.delete()
         }
         hash.remove(entityInstance.uniqueId)

@@ -42,8 +42,8 @@ object Command {
     @CommandBody
     val remove = removeSubCommand
 
-    @CommandBody
-    val rename = renameSubCommand
+//    @CommandBody
+//    val rename = renameSubCommand
 
     @CommandBody
     val tp = tpSubCommand
